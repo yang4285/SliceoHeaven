@@ -1,0 +1,95 @@
+public class  SliceoHeaven{
+    public String storeName;
+    public String storeAddress;
+
+    private String storeMenu;
+    public long storePhone;
+    public String storeEmail;
+    public String pizzaIngredients;
+    public double pizzaPrice;
+    public String sides;
+
+    private String orderID;
+    private String drinks;
+    private double orderTotal;
+
+    public static final String DEF_ORDER_ID = "DEF-SOH-099";
+    public static final String DEF_PIZZA_INGREDIENTS = "Mozzarella Cheese";
+    public static final double DEF_ORDER_TOTAL = 15.00;
+
+    public Slice_o_Heaven() {
+        this.orderID = DEF_ORDER_ID;
+        this.pizzaIngredients = DEF_PIZZA_INGREDIENTS;
+        this.orderTotal = DEF_ORDER_TOTAL;
+        this.sides = "";
+        this.drinks = "";
+    }
+    public Slice_o_Heaven(String orderID, String pizzaIngredients, double orderTotal) {
+        this.orderID = orderID;
+        this.pizzaIngredients = pizzaIngredients;
+        this.orderTotal = orderTotal;
+    }
+
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
+
+    public String getDrinks() {
+        return drinks;
+    }
+
+    public void setDrinks(String drinks) {
+        this.drinks = drinks;
+    }
+
+    public double getOrderTotal() {
+        return orderTotal;
+    }
+
+    public void setOrderTotal(double orderTotal) {
+        this.orderTotal = orderTotal;
+    }
+
+    public String getStoreMenu() {
+        return storeMenu;
+    }
+
+    public void setStoreMenu(String storeMenu) {
+        this.storeMenu = storeMenu;
+    }
+
+    public void takeOrder(String id, double total){
+        setOrderID(id);
+        setOrderTotal(total);
+
+        System.out.println("Order accepted!");
+
+        System.out.println("Order is being prepared");
+        makePizza();
+        
+    }
+    public void makePizza(){
+        try{
+            Thread.sleep(5000);
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        System.out.println("Your order is ready!");
+
+        printReceipt();
+    }
+
+    
+    private void printReceipt(){
+        System.out.println("********RECEIPT********");
+        System.out.println("Store Name: " + storeName);
+
+        System.out.println("OrderID: " + getOrderID());
+   
+        System.out.println("OrderTotal: " + getOrderTotal());
+    }
+    
