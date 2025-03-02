@@ -17,14 +17,14 @@ public class  SliceoHeaven{
     public static final String DEF_PIZZA_INGREDIENTS = "Mozzarella Cheese";
     public static final double DEF_ORDER_TOTAL = 15.00;
 
-    public Slice_o_Heaven() {
+    public SliceoHeaven() {
         this.orderID = DEF_ORDER_ID;
         this.pizzaIngredients = DEF_PIZZA_INGREDIENTS;
         this.orderTotal = DEF_ORDER_TOTAL;
         this.sides = "";
         this.drinks = "";
     }
-    public Slice_o_Heaven(String orderID, String pizzaIngredients, double orderTotal) {
+    public SliceoHeaven(String orderID, String pizzaIngredients, double orderTotal) {
         this.orderID = orderID;
         this.pizzaIngredients = pizzaIngredients;
         this.orderTotal = orderTotal;
@@ -92,4 +92,36 @@ public class  SliceoHeaven{
    
         System.out.println("OrderTotal: " + getOrderTotal());
     }
-    
+    public void processCardPayment(String cardNumber,String expiryDate,int cvv){
+        int cardLength = cardNumber.length();
+        if(cardLength ==14) {
+            System.out.println("Card accepted");
+        }else {
+            System.out.println("Invalid card");
+        }
+        int firstCardDigit = Integer.parseInt(cardNumber.substring(0, 1));
+
+        String blacklistedNumber = "12345678901234";
+        if (cardNumber.equals(blacklistedNumber)) {
+            System.out.println("Card is blacklisted. Please use another card");
+        }
+
+        int lastFourDigits = Integer.parseInt(cardNumber.substring(cardNumber.length() - 4));
+
+        String cardNumberToDisplay = cardNumber.charAt(0) +
+                cardNumber.substring(1, cardNumber.length() - 4).replaceAll(".", "*") +
+                cardNumber.substring(cardNumber.length() - 4);
+
+        System.out.println("First digit of the card: " + firstCardDigit);
+        System.out.println("Last four digits of the card: " + lastFourDigits);
+        System.out.println("Card number to display: " + cardNumberToDisplay);
+    }
+
+    public void specialOfTheDay(String pizzaOfTheDay, String sideOfTheDay, String specialPrice) {
+        StringBuilder specialInfo = new StringBuilder();
+        specialInfo.append("Special of the Day:\n");
+        specialInfo.append("Pizza: ").append(pizzaOfTheDay).append("\n");
+        specialInfo.append("Side: ").append(sideOfTheDay).append("\n");
+        specialInfo.append("Price: ").append(specialPrice);
+        System.out.println(specialInfo.toString());
+    }   
