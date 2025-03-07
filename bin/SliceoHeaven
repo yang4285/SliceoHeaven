@@ -21,8 +21,12 @@ public class SliceoHeaven {
     public static final String DEF_ORDER_ID = "DEF-SOH-099";
     public static final String DEF_PIZZA_INGREDIENTS = "Mozzarella Cheese";
     public static final double DEF_ORDER_TOTAL = 15.00;
+    public static final long BLACKLISTED_NUMBER = 12345678901234L;
+
+    private Scanner scanner;
 
     public SliceoHeaven() {
+        this.scanner = new Scanner(System.in);
         this.orderID = DEF_ORDER_ID;
         this.pizzaIngredients = DEF_PIZZA_INGREDIENTS;
         this.orderTotal = DEF_ORDER_TOTAL;
@@ -31,6 +35,7 @@ public class SliceoHeaven {
     }
 
     public SliceoHeaven(String orderID, String pizzaIngredients, double orderTotal) {
+        this.scanner = new Scanner(System.in);
         this.orderID = orderID;
         this.pizzaIngredients = pizzaIngredients;
         this.orderTotal = orderTotal;
@@ -69,24 +74,82 @@ public class SliceoHeaven {
     }
 
     public void takeOrder() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter three ingredients for your pizza (use spaces to separate ingredients):");
-        String ing1 = scanner.next();
-        String ing2 = scanner.next();
-        String ing3 = scanner.next();
+        int ingChoice1, ingChoice2, ingChoice3;
+        String ing1, ing2, ing3;
+        while (true) {
+            System.out.println("Please pick any three of the following ingredients:");
+            System.out.println("1. Mushroom");
+            System.out.println("2. Paprika");
+            System.out.println("3. Sun-dried tomatoes");
+            System.out.println("4. Chicken");
+            System.out.println("5. Pineapple");
+            System.out.println("Enter any three choices (1, 2, 3,…) separated by spaces:");
+            ingChoice1 = scanner.nextInt();
+            ingChoice2 = scanner.nextInt();
+            ingChoice3 = scanner.nextInt();
+            if (isValidIngredientChoice(ingChoice1) && isValidIngredientChoice(ingChoice2) && isValidIngredientChoice(ingChoice3)) {
+                break;
+            }
+            System.out.println("Invalid choice(s). Please pick only from the given list:");
+        }
+        ing1 = getIngredientFromChoice(ingChoice1);
+        ing2 = getIngredientFromChoice(ingChoice2);
+        ing3 = getIngredientFromChoice(ingChoice3);
         pizzaIngredients = ing1 + ", " + ing2 + ", " + ing3;
 
-        System.out.println("Enter size of pizza (Small, Medium, Large):");
-        String pizzaSize = scanner.next();
+        int sizeChoice;    
+        String pizzaSize;
+        while (true) {
+            System.out.println("What size should your pizza be?");
+            System.out.println("1. Large");
+            System.out.println("2. Medium");
+            System.out.println("3. Small");
+            System.out.println("Enter only one choice (1, 2, or 3):");
+            sizeChoice = scanner.nextInt();
+            if (sizeChoice >= 1 && sizeChoice <= 3) {
+                break;
+            }
+            System.out.println("Invalid choice. Please enter 1, 2, or 3:");
+        }
+        pizzaSize = getPizzaSizeFromChoice(sizeChoice);
 
         System.out.println("Do you want extra cheese (Y/N):");
         String extraCheese = scanner.next();
 
-        System.out.println("Enter one side dish (Calzone, Garlic bread, None):");
-        sides = scanner.next();
+        int sideDishChoice;
+        String sideDish;
+        while (true) {
+            System.out.println("Following are the side dish that go well with your pizza:");
+            System.out.println("1. Calzone");
+            System.out.println("2. Garlic bread");
+            System.out.println("3. Chicken puff");
+            System.out.println("4. Muffin");
+            System.out.println("5. Nothing for me");
+            System.out.println("What would you like? Pick one (1, 2, 3,…):");
+            sideDishChoice = scanner.nextInt();
+            if (sideDishChoice >= 1 && sideDishChoice <= 5) {
+                break;              
+            }
+            System.out.println("Invalid choice. Please pick from the given list:");
+        }
+        sideDish = getSideDishFromChoice(sideDishChoice);
+        sides = sideDish;
 
-        System.out.println("Enter drinks(Cold Coffee, Cocoa drink, Coke, None):");
-        drinks = scanner.next();
+        int drinkChoice;
+        while (true) {
+            System.out.println("Choose from one of the drinks below. We recommend Coca Cola:");
+            System.out.println("1. Coca Cola");
+            System.out.println("2. Cold coffee");
+            System.out.println("3. Cocoa Drink");
+            System.out.println("4. No drinks for me");
+            System.out.println("Enter your choice:");
+            drinkChoice = scanner.nextInt();
+            if (drinkChoice >= 1 && drinkChoice <= 4) {
+                break;
+            }
+            System.out.println("Invalid choice. Please pick from the given list:");
+        }
+        drinks = getDrinkFromChoice(drinkChoice);
 
         System.out.println("Would you like the chance to pay only half for your order? (Y/N):");
         String wantDiscount = scanner.next();
@@ -98,42 +161,137 @@ public class SliceoHeaven {
         }
     }
 
-    public void isItYourBirthday() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your birthday (dd/MM/yyyy):");
-        String birthdateStr = scanner.next();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        try {
-            LocalDate birthdate = LocalDate.parse(birthdateStr, formatter);
-            LocalDate today = LocalDate.now();
-            int age = today.getYear() - birthdate.getYear();
-            if (today.getMonthValue() < birthdate.getMonthValue() ||
-                    (today.getMonthValue() == birthdate.getMonthValue() && today.getDayOfMonth() < birthdate.getDayOfMonth())) {
-                age--;
-            }
+    private boolean isValidIngredientChoice(int choice) {
+        return choice >= 1 && choice <= 5;
+    }
 
-            if (age < 18 && today.getMonthValue() == birthdate.getMonthValue() && today.getDayOfMonth() == birthdate.getDayOfMonth()) {
-                System.out.println("Congratulations! You pay only half the price for your order");
-                orderTotal /= 2;
-            } else {
-                System.out.println("Too bad! You do not meet the conditions to get our 50% discount");
-            }
-            makePizza();
-        } catch (DateTimeParseException e) {
-            System.out.println("Invalid date format. Please use dd/MM/yyyy.");
+    private String getIngredientFromChoice(int choice) {
+        switch (choice) {
+            case 1:
+                return "Mushroom";
+            case 2:
+                return "Paprika";
+            case 3:
+                return "Sun-dried tomatoes";
+            case 4:
+                return "Chicken";
+            case 5:
+                return "Pineapple";
+            default:
+                return "";
         }
     }
 
+    private String getPizzaSizeFromChoice(int choice) {
+        switch (choice) {
+            case 1:
+                return "Large";
+            case 2:
+                return "Medium";
+            case 3:
+                return "Small";
+            default:
+                return "";
+        }
+    }
+
+    private String getSideDishFromChoice(int choice) {
+        switch (choice) {
+            case 1:
+                return "Calzone";
+            case 2:
+                return "Garlic bread";
+            case 3:
+                return "Chicken puff";
+            case 4:
+                return "Muffin";
+            case 5:
+                return "Nothing for me";
+            default:
+                return "";
+        }
+    }
+
+    private String getDrinkFromChoice(int choice) {
+        switch (choice) {
+            case 1:
+                return "Coca Cola";
+            case 2:
+                return "Cold coffee";
+            case 3:
+                return "Cocoa Drink";
+            case 4:
+                return "No drinks for me";
+            default:
+                return "";
+        }
+    }
+
+    public void isItYourBirthday() {
+        LocalDate birthdate;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        while (true) {
+            System.out.println("Enter your birthday (dd/MM/yyyy):");
+            String birthdateStr = scanner.next();
+            try {
+                birthdate = LocalDate.parse(birthdateStr, formatter);
+                LocalDate fiveYearsAgo = LocalDate.now().minusYears(5);
+                LocalDate oneHundredTwentyYearsAgo = LocalDate.now().minusYears(120);
+                if (birthdate.isBefore(fiveYearsAgo) && birthdate.isAfter(oneHundredTwentyYearsAgo)) {
+                    break;
+                }
+                System.out.println("Invalid date. You are either too young or too dead to order.");
+                System.out.println("Please enter a valid date:");
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please use dd/MM/yyyy.");
+            }
+        }
+        LocalDate today = LocalDate.now();
+        int age = today.getYear() - birthdate.getYear();
+        if (today.getMonthValue() < birthdate.getMonthValue() ||
+                (today.getMonthValue() == birthdate.getMonthValue() && today.getDayOfMonth() < birthdate.getDayOfMonth())) {
+            age--;
+        }
+
+        if (age < 18 && today.getMonthValue() == birthdate.getMonthValue() && today.getDayOfMonth() == birthdate.getDayOfMonth()) {
+            System.out.println("Congratulations! You pay only half the price for your order");
+            orderTotal /= 2;
+        } else {
+            System.out.println("Too bad! You do not meet the conditions to get our 50% discount");
+        }
+        makePizza();
+    }
+
     public void makeCardPayment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter your card number:");
-        long cardNumber = scanner.nextLong();
-
-        System.out.println("Enter the card’s expiry date (MM/yyyy):");
-        String expiryDate = scanner.next();
-
+        long cardNumber;
+        String expiryDate;
+        int cvv;
+        while (true) {
+            System.out.println("Enter your card number:");
+            cardNumber = scanner.nextLong();
+            String cardNumberStr = Long.toString(cardNumber);
+            if (cardNumberStr.length() == 14 && cardNumber != BLACKLISTED_NUMBER) {
+                break;
+            }
+            System.out.println("Invalid card number. Please enter a 14-digit number that is not blacklisted:");
+        }
+        DateTimeFormatter expiryFormatter = DateTimeFormatter.ofPattern("MM/yyyy");
+        LocalDate currentDate = LocalDate.now();
+        while (true) {
+            System.out.println("Enter the card’s expiry date (MM/yyyy):");
+            expiryDate = scanner.next();
+            try {
+                LocalDate expiry = LocalDate.parse("01/" + expiryDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                if (expiry.isAfter(currentDate)) {
+                    break;
+                }
+                System.out.println("Invalid expiry date. Please enter a future date:");
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please use MM/yyyy.");
+            }
+        }
         System.out.println("Enter the card’s cvv number:");
-        int cvv = scanner.nextInt();
+        cvv = scanner.nextInt();
 
         processCardPayment(cardNumber, expiryDate, cvv);
         makePizza();
@@ -146,18 +304,20 @@ public class SliceoHeaven {
             e.printStackTrace();
         }
         System.out.println("Your order is ready!");
-
-        printReceipt();
+        System.out.println(this);
     }
 
-    private void printReceipt() {
-        System.out.println("********RECEIPT********");
-        System.out.println("Store Name: " + storeName);
-        System.out.println("OrderID: " + getOrderID());
-        System.out.println("Pizza Ingredients: " + pizzaIngredients);
-        System.out.println("Sides: " + sides);
-        System.out.println("Drinks: " + drinks);
-        System.out.println("OrderTotal: " + getOrderTotal());
+    @Override
+    public String toString() {
+        StringBuilder receipt = new StringBuilder();
+        receipt.append("********RECEIPT********\n");
+        receipt.append("Store Name: ").append(storeName).append("\n");
+        receipt.append("OrderID: ").append(getOrderID()).append("\n");
+        receipt.append("Pizza Ingredients: ").append(pizzaIngredients).append("\n");
+        receipt.append("Sides: ").append(sides).append("\n");
+        receipt.append("Drinks: ").append(drinks).append("\n");
+        receipt.append("OrderTotal: ").append(getOrderTotal()).append("\n");
+        return receipt.toString();
     }
 
     public void processCardPayment(long cardNumber, String expiryDate, int cvv) {
@@ -169,8 +329,7 @@ public class SliceoHeaven {
         }
         int firstCardDigit = Integer.parseInt(cardNumberStr.substring(0, 1));
 
-        long blacklistedNumber = 12345678901234L;
-        if (cardNumber == blacklistedNumber) {
+        if (cardNumber == BLACKLISTED_NUMBER) {
             System.out.println("Card is blacklisted. Please use another card");
         }
 
